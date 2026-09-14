@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>BENGAL IIN — Guest Reviews</title>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<style>
+*{box-sizing:border-box}
+body{
+  margin:0;
+  font-family:Arial,sans-serif;
+  background:#f5f7fa;
+  color:#222
+}
+.hero{
+  min-height:300px;
+  background:
+    linear-gradient(rgba(0,0,0,.58),rgba(0,0,0,.58)),
+    url("https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=1600&q=85")
+    center/cover;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+  color:white;
+  padding:30px 15px
+}
+.hero h1{font-size:38px;margin:0 0 10px}
+.hero p{font-size:17px;margin:0}
+.container{
+  width:min(850px,94%);
+  margin:25px auto
+}
+.card{
+  background:white;
+  border-radius:16px;
+  padding:22px;
+  margin-bottom:20px;
+  box-shadow:0 5px 20px rgba(0,0,0,.08)
+}
+h2{margin-top:0}
+button{
+  border:0;
+  border-radius:10px;
+  padding:13px 18px;
+  font-size:15px;
+  cursor:pointer
+}
+.google{
+  background:#fff;
+  border:1px solid #ddd;
+  width:100%;
+  font-weight:bold
+}
+.submit{
+  background:#111;
+  color:#fff;
+  width:100%;
+  margin-top:10px
+}
+.logout{
+  background:#eee;
+  color:#222;
+  margin-top:10px
+}
+input,textarea,select{
+  width:100%;
+  padding:13px;
+  border:1px solid #ddd;
+  border-radius:10px;
+  margin:7px 0 15px;
+  font-size:15px
+}
+textarea{min-height:120px;resize:vertical}
+label{font-weight:bold;font-size:14px}
+.rating{
+  display:flex;
+  gap:7px;
+  margin:8px 0 18px
+}
+.star{
+  font-size:34px;
+  cursor:pointer;
+  color:#ccc
+}
+.star.active{color:#f5b400}
+.user{
+  background:#f0f4f8;
+  padding:12px;
+  border-radius:10px;
+  margin-bottom:15px
+}
+.review{
+  border-top:1px solid #eee;
+  padding:17px 0
+}
+.review:first-child{border-top:0}
+.review-name{font-weight:bold}
+.review-stars{color:#f5b400;font-size:18px}
+.review-date{font-size:12px;color:#777;margin-top:5px}
+.status{
+  padding:11px;
+  border-radius:9px;
+  margin:10px 0;
+  display:none
+}
+.success{background:#e8f7ed;color:#176b35}
+.error{background:#fdecec;color:#a51d1d}
+.muted{color:#777}
+</style>
+</head>
+
+<body>
+
+<section class="hero">
+  <div>
+    <h1>BENGAL IIN</h1>
+    <p>Share your experience with us</p>
+  </div>
+</section>
+
+<div class="container">
+
+  <div class="card">
+    <h2>Guest Reviews</h2>
+    <p class="muted">See what our guests say about BENGAL IIN.</p>
+    <div id="reviews">Loading reviews...</div>
+  </div>
+
+  <div class="card">
+    <h2>Write a Review</h2>
+
+    <div id="loginBox">
+      <p>You must sign in with Google before submitting a review.</p>
+      <button class="google" onclick="loginWithGoogle()">
+        🔵 Continue with Google
+      </button>
+    </div>
+
+    <div id="reviewBox" style="display:none">
+
+      <div class="user">
+        Signed in as:
+        <strong id="userName"></strong>
+        <br>
+        <button class="logout" onclick="logout()">Sign out</button>
+      </div>
+
+      <div id="status" class="status"></div>
+
+      <label>Guest Name</label>
+      <input id="guestName" type="text" placeholder="Your name">
+
+      <label>Staff Name (Optional)</label>
+      <input id="staffName" type="text" placeholder="Staff member name">
+
+      <label>Rating</label>
+      <div class="rating" id="stars">
+        <span class="star" data-rating="1">★</span>
+        <span class="star" data-rating="2">★</span>
+        <span class="star" data-rating="3">★</span>
+        <span class="star" data-rating="4">★</span>
+        <span class="star" data-rating="5">★</span>
+      </div>
+
+      <label>Your Review</label>
+      <textarea id="reviewText" placeholder="Write your experience..."></textarea>
+
+      <button class="submit" onclick="submitReview()">
+        Submit Review
+      </button>
+
+    </div>
+  </div>
+
+</div>
+
+<script>
+const SUPABASE_URL =
+  "https://wwrltvuyhfsldsdnqigo.supabase.co";
+
+const SUPABASE_ANON_KEY =
+  "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";
+
+const supabaseClient =
+  window.supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_ANON_KEY
+  );
+
+let currentUser = null;
+let selectedRating = 0;
+
+
+/* GOOGLE LOGIN */
+async function loginWithGoogle(){
+
+  const redirectTo =
+    window.location.origin +
+    window.location.pathname;
+
+  const {error} =
+    await supabaseClient.auth.signInWithOAuth({
+      provider:"google",
+      options:{
+        redirectTo:redirectTo
+      }
+    });
+
+  if(error){
+    alert(error.message);
+  }
+}
+
+
+/* LOGOUT */
+async function logout(){
+  await supabaseClient.auth.signOut();
+  location.reload();
+}
+
+
+/* AUTH STATE */
+async function checkUser(){
+
+  const {data,error} =
+    await supabaseClient.auth.getSession();
+
+  if(error){
+    console.log(error);
+    return;
+  }
+
+  currentUser = data.session?.user || null;
+
+  updateUI();
+}
+
+
+/* UPDATE UI */
+function updateUI(){
+
+  const loginBox =
+    document.getElementById("loginBox");
+
+  const reviewBox =
+    document.getElementById("reviewBox");
+
+  const userName =
+    document.getElementById("userName");
+
+  const guestName =
+    document.getElementById("guestName");
+
+  if(currentUser){
+
+    loginBox.style.display="none";
+    reviewBox.style.display="block";
+
+    const name =
+      currentUser.user_metadata?.full_name ||
+      currentUser.user_metadata?.name ||
+      currentUser.email ||
+      "Guest";
+
+    userName.textContent=name;
+
+    guestName.value=name;
+
+  }else{
+
+    loginBox.style.display="block";
+    reviewBox.style.display="none";
+
+  }
+}
+
+
+/* STAR RATING */
+document.querySelectorAll(".star").forEach(star=>{
+
+  star.addEventListener("click",()=>{
+
+    selectedRating =
+      Number(star.dataset.rating);
+
+    document.querySelectorAll(".star")
+      .forEach(s=>{
+        s.classList.toggle(
+          "active",
+          Number(s.dataset.rating)<=selectedRating
+        );
+      });
+
+  });
+
+});
+
+
+/* SUBMIT REVIEW */
+async function submitReview(){
+
+  if(!currentUser){
+    alert("Please sign in with Google first.");
+    return;
+  }
+
+  const guestName =
+    document.getElementById("guestName")
+      .value.trim();
+
+  const staffName =
+    document.getElementById("staffName")
+      .value.trim();
+
+  const reviewText =
+    document.getElementById("reviewText")
+      .value.trim();
+
+  const status =
+    document.getElementById("status");
+
+  if(!guestName){
+    showStatus("Please enter your name.","error");
+    return;
+  }
+
+  if(!selectedRating){
+    showStatus("Please select a rating.","error");
+    return;
+  }
+
+  if(!reviewText){
+    showStatus("Please write your review.","error");
+    return;
+  }
+
+  showStatus("Submitting review...","success");
+
+  const {error} =
+    await supabaseClient
+      .from("reviews")
+      .insert({
+        user_id:currentUser.id,
+        guest_name:guestName,
+        staff_name:staffName || null,
+        rating:selectedRating,
+        review_text:reviewText
+      });
+
+  if(error){
+
+    console.log(error);
+    showStatus(
+      "Review submit failed: " + error.message,
+      "error"
+    );
+
+    return;
+  }
+
+  showStatus(
+    "Review submitted successfully!",
+    "success"
+  );
+
+  document.getElementById("staffName").value="";
+  document.getElementById("reviewText").value="";
+
+  selectedRating=0;
+
+  document.querySelectorAll(".star")
+    .forEach(s=>s.classList.remove("active"));
+
+  loadReviews();
+}
+
+
+/* STATUS */
+function showStatus(message,type){
+
+  const status =
+    document.getElementById("status");
+
+  status.textContent=message;
+  status.className=
+    "status " + type;
+
+  status.style.display="block";
+}
+
+
+/* LOAD REVIEWS */
+async function loadReviews(){
+
+  const box =
+    document.getElementById("reviews");
+
+  const {data,error} =
+    await supabaseClient
+      .from("reviews")
+      .select("*")
+      .order("created_at",{ascending:false});
+
+  if(error){
+
+    box.innerHTML =
+      "<p class='muted'>Reviews could not be loaded.</p>";
+
+    console.log(error);
+
+    return;
+  }
+
+  if(!data || data.length===0){
+
+    box.innerHTML =
+      "<p class='muted'>No reviews yet. Be the first!</p>";
+
+    return;
+  }
+
+  box.innerHTML =
+    data.map(review=>{
+
+      const stars =
+        "★".repeat(review.rating) +
+        "☆".repeat(5-review.rating);
+
+      const date =
+        new Date(review.created_at)
+          .toLocaleDateString();
+
+      return `
+        <div class="review">
+
+          <div class="review-name">
+            ${escapeHtml(review.guest_name)}
+          </div>
+
+          <div class="review-stars">
+            ${stars}
+          </div>
+
+          ${
+            review.staff_name
+            ? `<div class="muted">
+                Staff: ${escapeHtml(review.staff_name)}
+              </div>`
+            : ""
+          }
+
+          <p>${escapeHtml(review.review_text)}</p>
+
+          <div class="review-date">
+            ${date}
+          </div>
+
+        </div>
+      `;
+
+    }).join("");
+}
+
+
+/* BASIC HTML ESCAPE */
+function escapeHtml(text){
+
+  return String(text)
+    .replaceAll("&","&amp;")
+    .replaceAll("<","&lt;")
+    .replaceAll(">","&gt;")
+    .replaceAll('"',"&quot;")
+    .replaceAll("'","&#039;");
+
+}
+
+
+/* START */
+checkUser();
+loadReviews();
+
+supabaseClient.auth.onAuthStateChange(
+  (_event,session)=>{
+    currentUser =
+      session?.user || null;
+
+    updateUI();
+  }
+);
+
+</script>
+
+</body>
+</html>
