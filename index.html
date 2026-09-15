@@ -4,36 +4,165 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>BENGAL IIN Reviews</title>
+
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <style>
 *{box-sizing:border-box}
-body{margin:0;font-family:Arial,sans-serif;background:#f5f6f8;color:#222}
-.hero{min-height:300px;display:flex;align-items:center;justify-content:center;text-align:center;color:white;padding:30px 15px;background:linear-gradient(#0009,#0009),url("https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=1600&q=85") center/cover}
-.hero h1{font-size:40px;margin:0 0 8px}
-.container{max-width:850px;width:94%;margin:25px auto}
-.card{background:#fff;border-radius:16px;padding:22px;margin-bottom:20px;box-shadow:0 5px 20px #00000012}
+
+body{
+margin:0;
+font-family:Arial,sans-serif;
+background:#f5f6f8;
+color:#222
+}
+
+.hero{
+min-height:300px;
+display:flex;
+align-items:center;
+justify-content:center;
+text-align:center;
+color:white;
+padding:30px 15px;
+background:
+linear-gradient(#0009,#0009),
+url("YOUR_BENGAL_INN_IMAGE_URL_HERE")
+center/cover
+}
+
+.hero h1{
+font-size:40px;
+margin:0 0 8px
+}
+
+.container{
+max-width:850px;
+width:94%;
+margin:25px auto
+}
+
+.card{
+background:#fff;
+border-radius:16px;
+padding:22px;
+margin-bottom:20px;
+box-shadow:0 5px 20px #00000012
+}
+
 h2{margin-top:0}
-button{border:0;border-radius:10px;padding:13px 18px;font-size:15px;cursor:pointer}
-.google{width:100%;background:#fff;border:1px solid #ddd;font-weight:bold}
-.submit{width:100%;background:#111;color:#fff}
-.logout{background:#eee;margin-top:10px}
-input,textarea{width:100%;padding:13px;border:1px solid #ddd;border-radius:10px;margin:7px 0 15px;font-size:15px}
-textarea{min-height:120px}
-label{font-weight:bold;font-size:14px}
-.rating{display:flex;gap:6px;margin:8px 0 18px}
-.star{font-size:35px;color:#ccc;cursor:pointer}
-.star.active{color:#f5b400}
-.user{background:#f1f4f7;padding:13px;border-radius:10px;margin-bottom:15px}
-.status{display:none;padding:11px;border-radius:9px;margin:10px 0}
-.success{background:#e8f7ed;color:#176b35}
-.error{background:#fdecec;color:#a51d1d}
-.review{border-top:1px solid #eee;padding:17px 0}
-.review:first-child{border-top:0}
-.review-name{font-weight:bold}
-.review-stars{color:#f5b400;font-size:18px}
-.review-date{font-size:12px;color:#777;margin-top:6px}
-.muted{color:#777}
+
+button{
+border:0;
+border-radius:10px;
+padding:13px 18px;
+font-size:15px;
+cursor:pointer
+}
+
+.google{
+width:100%;
+background:#fff;
+border:1px solid #ddd;
+font-weight:bold
+}
+
+.submit{
+width:100%;
+background:#111;
+color:#fff
+}
+
+.logout{
+background:#eee;
+margin-top:10px
+}
+
+input,textarea{
+width:100%;
+padding:13px;
+border:1px solid #ddd;
+border-radius:10px;
+margin:7px 0 15px;
+font-size:15px
+}
+
+textarea{
+min-height:120px
+}
+
+label{
+font-weight:bold;
+font-size:14px
+}
+
+.rating{
+display:flex;
+gap:6px;
+margin:8px 0 18px
+}
+
+.star{
+font-size:35px;
+color:#ccc;
+cursor:pointer
+}
+
+.star.active{
+color:#f5b400
+}
+
+.user{
+background:#f1f4f7;
+padding:13px;
+border-radius:10px;
+margin-bottom:15px
+}
+
+.status{
+display:none;
+padding:11px;
+border-radius:9px;
+margin:10px 0
+}
+
+.success{
+background:#e8f7ed;
+color:#176b35
+}
+
+.error{
+background:#fdecec;
+color:#a51d1d
+}
+
+.review{
+border-top:1px solid #eee;
+padding:17px 0
+}
+
+.review:first-child{
+border-top:0
+}
+
+.review-name{
+font-weight:bold
+}
+
+.review-stars{
+color:#f5b400;
+font-size:18px
+}
+
+.review-date{
+font-size:12px;
+color:#777;
+margin-top:6px
+}
+
+.muted{
+color:#777
+}
 </style>
 </head>
 
@@ -48,64 +177,123 @@ label{font-weight:bold;font-size:14px}
 
 <div class="container">
 
+<!-- WRITE REVIEW FIRST -->
 <div class="card">
-<h2>Guest Reviews</h2>
-<div id="reviews">Loading reviews...</div>
-</div>
 
-<div class="card">
 <h2>Write a Review</h2>
 
 <div id="loginBox">
+
 <p>You need to sign in with Google before writing a review.</p>
-<button class="google" id="googleBtn">🔵 Continue with Google</button>
+
+<button class="google" id="googleBtn">
+🔵 Continue with Google
+</button>
+
 </div>
+
 
 <div id="reviewBox" style="display:none">
 
 <div class="user">
+
 Signed in as <strong id="userName"></strong><br>
-<button class="logout" id="logoutBtn">Sign out</button>
+
+<button class="logout" id="logoutBtn">
+Sign out
+</button>
+
 </div>
+
 
 <div id="status" class="status"></div>
 
+
 <label>Guest Name</label>
-<input id="guestName" type="text" placeholder="Your name">
+
+<input
+id="guestName"
+type="text"
+placeholder="Your name"
+>
+
 
 <label>Staff Name (Optional)</label>
-<input id="staffName" type="text" placeholder="Staff member name">
+
+<input
+id="staffName"
+type="text"
+placeholder="Staff member name"
+>
+
 
 <label>Rating</label>
+
 <div class="rating">
+
 <span class="star" data-rating="1">★</span>
 <span class="star" data-rating="2">★</span>
 <span class="star" data-rating="3">★</span>
 <span class="star" data-rating="4">★</span>
 <span class="star" data-rating="5">★</span>
+
 </div>
+
 
 <label>Your Review</label>
-<textarea id="reviewText" placeholder="Write your experience..."></textarea>
 
-<button class="submit" id="submitBtn">Submit Review</button>
+<textarea
+id="reviewText"
+placeholder="Write your experience..."
+></textarea>
+
+
+<button class="submit" id="submitBtn">
+Submit Review
+</button>
 
 </div>
+
 </div>
+
+
+<!-- GUEST REVIEWS SECOND -->
+<div class="card">
+
+<h2>Guest Reviews</h2>
+
+<div id="reviews">
+Loading reviews...
 </div>
+
+</div>
+
+</div>
+
 
 <script>
 
 const SUPABASE_URL =
 "https://wwrltvuyhfsldsdnqigo.supabase.co";
 
-/* এখানে নিজের Supabase PUBLISHABLE KEY বসাবি */
-const SUPABASE_ANON_KEY ="sb_publishable_E1NcO2u3rg4a41Ig9IaZWA_iY-bBiW6";
+
+/*
+==================================================
+IMPORTANT:
+এখানে নিজের SUPABASE PUBLISHABLE KEY বসাবি
+==================================================
+*/
+
+const SUPABASE_ANON_KEY =
+"sb_publishable_E1NcO2u3rg4a41Ig9IaZWA_iY-bBiW6";
+
 
 const REDIRECT_URL =
 "https://philistine-vote.github.io/bengal-inn-review/";
 
-const supabaseClient = window.supabase.createClient(
+
+const supabaseClient =
+window.supabase.createClient(
 SUPABASE_URL,
 SUPABASE_ANON_KEY,
 {
@@ -118,59 +306,92 @@ flowType:"implicit"
 }
 );
 
+
 let currentUser=null;
 let selectedRating=0;
 
-const loginBox=document.getElementById("loginBox");
-const reviewBox=document.getElementById("reviewBox");
-const userName=document.getElementById("userName");
-const guestName=document.getElementById("guestName");
-const statusBox=document.getElementById("status");
+
+const loginBox =
+document.getElementById("loginBox");
+
+const reviewBox =
+document.getElementById("reviewBox");
+
+const userName =
+document.getElementById("userName");
+
+const guestName =
+document.getElementById("guestName");
+
+const statusBox =
+document.getElementById("status");
 
 
 async function login(){
 
-const {error}=await supabaseClient.auth.signInWithOAuth({
+const {error} =
+await supabaseClient.auth.signInWithOAuth({
+
 provider:"google",
+
 options:{
+
 redirectTo:REDIRECT_URL,
+
 queryParams:{
 prompt:"select_account"
 }
+
 }
+
 });
 
+
 if(error){
+
 console.log(error);
+
 alert(error.message);
-}
 
 }
 
+}
 
-document.getElementById("googleBtn").onclick=login;
+
+document.getElementById("googleBtn")
+.onclick=login;
 
 
 function showUser(user){
 
 currentUser=user;
 
+
 if(!user){
+
 loginBox.style.display="block";
+
 reviewBox.style.display="none";
+
 return;
+
 }
 
+
 loginBox.style.display="none";
+
 reviewBox.style.display="block";
 
-const name=
+
+const name =
 user.user_metadata?.full_name ||
 user.user_metadata?.name ||
 user.email ||
 "Guest";
 
+
 userName.textContent=name;
+
 guestName.value=name;
 
 }
@@ -178,30 +399,44 @@ guestName.value=name;
 
 async function init(){
 
-const {data,error}=await supabaseClient.auth.getSession();
+const {data,error} =
+await supabaseClient.auth.getSession();
+
 
 if(error){
+
 console.log(error);
+
 return;
-}
-
-showUser(data.session?.user || null);
 
 }
 
 
-supabaseClient.auth.onAuthStateChange((event,session)=>{
+showUser(
+data.session?.user || null
+);
 
-showUser(session?.user || null);
+}
+
+
+supabaseClient.auth.onAuthStateChange(
+(event,session)=>{
+
+showUser(
+session?.user || null
+);
 
 if(session?.user){
+
 loadReviews();
+
 }
 
 });
 
 
-document.getElementById("logoutBtn").onclick=async()=>{
+document.getElementById("logoutBtn")
+.onclick=async()=>{
 
 await supabaseClient.auth.signOut();
 
@@ -210,17 +445,24 @@ showUser(null);
 };
 
 
-document.querySelectorAll(".star").forEach(star=>{
+document.querySelectorAll(".star")
+.forEach(star=>{
 
 star.onclick=()=>{
 
-selectedRating=Number(star.dataset.rating);
+selectedRating =
+Number(star.dataset.rating);
 
-document.querySelectorAll(".star").forEach(s=>{
+
+document.querySelectorAll(".star")
+.forEach(s=>{
+
 s.classList.toggle(
 "active",
-Number(s.dataset.rating)<=selectedRating
+Number(s.dataset.rating)
+<=selectedRating
 );
+
 });
 
 };
@@ -228,75 +470,163 @@ Number(s.dataset.rating)<=selectedRating
 });
 
 
-function showStatus(message,type){
+function showStatus(
+message,
+type
+){
 
 statusBox.textContent=message;
-statusBox.className="status "+type;
+
+statusBox.className=
+"status "+type;
+
 statusBox.style.display="block";
 
 }
 
 
-document.getElementById("submitBtn").onclick=async()=>{
+document.getElementById("submitBtn")
+.onclick=async()=>{
+
 
 if(!currentUser){
-showStatus("Please sign in with Google first.","error");
+
+showStatus(
+"Please sign in with Google first.",
+"error"
+);
+
 return;
+
 }
 
-const guest=guestName.value.trim();
-const staff=document.getElementById("staffName").value.trim();
-const text=document.getElementById("reviewText").value.trim();
+
+const guest =
+guestName.value.trim();
+
+const staff =
+document.getElementById(
+"staffName"
+).value.trim();
+
+const text =
+document.getElementById(
+"reviewText"
+).value.trim();
+
 
 if(!guest){
-showStatus("Please enter your name.","error");
+
+showStatus(
+"Please enter your name.",
+"error"
+);
+
 return;
+
 }
+
 
 if(selectedRating<1){
-showStatus("Please select a rating.","error");
+
+showStatus(
+"Please select a rating.",
+"error"
+);
+
 return;
+
 }
+
 
 if(!text){
-showStatus("Please write your review.","error");
+
+showStatus(
+"Please write your review.",
+"error"
+);
+
 return;
+
 }
 
-const btn=document.getElementById("submitBtn");
-btn.disabled=true;
-btn.textContent="Submitting...";
 
-const {error}=await supabaseClient
+const btn =
+document.getElementById(
+"submitBtn"
+);
+
+
+btn.disabled=true;
+
+btn.textContent=
+"Submitting...";
+
+
+const {error} =
+await supabaseClient
 .from("reviews")
 .insert({
+
 user_id:currentUser.id,
+
 guest_name:guest,
-staff_name:staff || null,
+
+staff_name:
+staff || null,
+
 rating:selectedRating,
+
 review_text:text
+
 });
 
+
 btn.disabled=false;
-btn.textContent="Submit Review";
+
+btn.textContent=
+"Submit Review";
+
 
 if(error){
 
 console.log(error);
-showStatus("Could not submit: "+error.message,"error");
+
+showStatus(
+"Could not submit: "
++error.message,
+"error"
+);
+
 return;
 
 }
 
-showStatus("Review submitted successfully!","success");
 
-document.getElementById("staffName").value="";
-document.getElementById("reviewText").value="";
+showStatus(
+"Review submitted successfully!",
+"success"
+);
+
+
+document.getElementById(
+"staffName"
+).value="";
+
+
+document.getElementById(
+"reviewText"
+).value="";
+
 
 selectedRating=0;
 
+
 document.querySelectorAll(".star")
-.forEach(s=>s.classList.remove("active"));
+.forEach(s=>
+s.classList.remove("active")
+);
+
 
 loadReviews();
 
@@ -305,58 +635,90 @@ loadReviews();
 
 async function loadReviews(){
 
-const box=document.getElementById("reviews");
+const box =
+document.getElementById(
+"reviews"
+);
 
-const {data,error}=await supabaseClient
+
+const {data,error} =
+await supabaseClient
 .from("reviews")
 .select("*")
-.order("created_at",{ascending:false});
+.order(
+"created_at",
+{ascending:false}
+);
+
 
 if(error){
 
 console.log(error);
 
-box.innerHTML=
+box.innerHTML =
 "<p class='muted'>Reviews could not be loaded yet.</p>";
 
 return;
 
 }
 
+
 if(!data || data.length===0){
 
-box.innerHTML=
+box.innerHTML =
 "<p class='muted'>No reviews yet. Be the first!</p>";
 
 return;
 
 }
 
-box.innerHTML=data.map(r=>{
 
-const stars=
-"★".repeat(r.rating)+
+box.innerHTML =
+data.map(r=>{
+
+const stars =
+"★".repeat(r.rating)
++
 "☆".repeat(5-r.rating);
 
-const date=
-new Date(r.created_at).toLocaleDateString();
+
+const date =
+new Date(
+r.created_at
+).toLocaleDateString();
+
 
 return `
+
 <div class="review">
+
 <div class="review-name">
 ${escapeHtml(r.guest_name)}
 </div>
 
-<div class="review-stars">${stars}</div>
-
-${r.staff_name ?
-`<div class="muted">Staff: ${escapeHtml(r.staff_name)}</div>`
-:""}
-
-<p>${escapeHtml(r.review_text)}</p>
-
-<div class="review-date">${date}</div>
+<div class="review-stars">
+${stars}
 </div>
+
+${
+r.staff_name
+?
+`<div class="muted">
+Staff: ${escapeHtml(r.staff_name)}
+</div>`
+:""
+}
+
+<p>
+${escapeHtml(r.review_text)}
+</p>
+
+<div class="review-date">
+${date}
+</div>
+
+</div>
+
 `;
 
 }).join("");
@@ -367,16 +729,37 @@ ${r.staff_name ?
 function escapeHtml(value){
 
 return String(value)
-.replaceAll("&","&amp;")
-.replaceAll("<","&lt;")
-.replaceAll(">","&gt;")
-.replaceAll('"',"&quot;")
-.replaceAll("'","&#039;");
+
+.replaceAll(
+"&",
+"&amp;"
+)
+
+.replaceAll(
+"<",
+"&lt;"
+)
+
+.replaceAll(
+">",
+"&gt;"
+)
+
+.replaceAll(
+'"',
+"&quot;"
+)
+
+.replaceAll(
+"'",
+"&#039;"
+);
 
 }
 
 
 init();
+
 loadReviews();
 
 </script>
